@@ -1,4 +1,6 @@
 import turtle
+import time
+import threading
 
 print("Fullscreen is required.")
 
@@ -27,6 +29,7 @@ grandma.penup()
 grandma.goto(500, -200)
 
 clicks = 0
+increase_clicks_time = 0
 increment = 1
 grandmawork = 0
 
@@ -49,6 +52,26 @@ def clicked(x, y):
     pen.goto(0, 200)
     pen.write(f"Clicks: {clicks}", align="center", font=("Courier New", 32, "normal"))
 
+def granny_clicked(x, y):
+    global clicks, increase_clicks_time
+    if clicks >= 100:
+        clicks -= 100
+        increase_clicks_time += 1
+        clicks += increase_clicks_time
+        pen.clear()
+        pen.write(f"Clicks: {clicks}", align="center", font=("Courier New", 32, "normal"))
+
+
+def time_operation():
+    global clicks, increase_clicks_time
+    while True:
+        time.sleep(1)
+        clicks += increase_clicks_time
+        pen.clear()
+        pen.write(f"Clicks: {clicks}", align="center", font=("Courier New", 32, "normal"))
+
+t1 = threading.Thread(target=time_operation, name="t1")
+t1.start()
 
 def upgrade(x, y):
     global clicks, increment
@@ -68,12 +91,11 @@ def upgrade(x, y):
         pen.penup()
 
 
-def grandmaupgrade():
-
 
 
 cookie.onclick(clicked)
 cursor.onclick(upgrade)
+grandma.onclick(granny_clicked)
 
 wn.mainloop()
 
